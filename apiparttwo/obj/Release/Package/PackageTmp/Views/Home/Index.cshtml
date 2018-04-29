@@ -1,0 +1,91 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+
+}
+<div class="row">
+    <h1 class="m-auto">Compare your Crypto Currency on Top forums</h1>
+    
+</div>
+<div class="row mt-4">
+    <h2 class="m-auto">Updates in 00:<span id="timer"></span></h2>
+</div>
+
+<div class="mt-3">
+    <div class="row"><div class="col-2">Crypto Currency :</div> <div>@Html.DropDownList("cryptos", null, new { id = "cryptos" })</div></div>
+    <div class="row mt-2"><div class="col-2">Currency :</div>   @Html.DropDownList("currencylist", null, new { id = "currencylist" })</div>
+
+</div>
+
+<div id="" class="row mt-5">
+    <div class="row m-auto col-8">
+        <div class="col-4 m-auto"><h3>Forums</h3></div>
+        <div class="col-4 m-auto"><h3><span id="conversiondata"></span></h3></div>
+    </div>
+</div>
+
+<div id="data" class="row mt-5">
+    
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var counter = 30;
+        var priceobj;
+        var cryptovalue = $("#cryptos").val();
+        var currencyval = $("#currencylist").val();
+        console.log(currencyval);
+        console.log(cryptovalue);
+        getData(cryptovalue, currencyval);
+        $("#conversiondata").text(cryptovalue + '/' + currencyval);
+        
+        $("#cryptos").change(function () {
+            cryptovalue = $(this).val();
+            currencyval = $("#currencylist").val();
+            $("#conversiondata").text(cryptovalue + '/' + currencyval);
+            console.log(currencyval);
+            console.log(cryptovalue);
+            getData(cryptovalue, currencyval);
+            
+        });
+        $("#currencylist").change(function () {
+            cryptovalue = $("#cryptos").val();
+            currencyval = $(this).val();
+            $("#conversiondata").text(cryptovalue + '/' + currencyval);
+            console.log(currencyval);
+            console.log(cryptovalue);
+            getData(cryptovalue, currencyval);
+        })
+        function getData(cryptovalue, currencyval) {
+            $.getJSON("/Home/getPrice/", { crypto: cryptovalue, currency: currencyval }, function (data) {
+                priceobj = data;
+                $('#data').empty();
+                $.each(priceobj, function (i, item) {
+
+                    //console.log(item);
+                    var divtag = $("<div class='row m-auto col-8'></div>");
+                    divtag.append($("<div id=" + i + "f class='col-4 m-auto'></div>").text(item.Name));
+                    divtag.append($("<div id=" + i + "p class='col-4 m-auto'></div>").text(item.Price))
+                    $("#data").append(divtag);
+
+                });
+            });
+        }
+        setInterval(function () {
+            getData(cryptovalue, currencyval);
+        },30000)
+
+        setInterval(function () {
+            if (counter === 0) {
+                counter = 30;
+            }
+            $("#timer").text(counter);
+            counter--;
+        },1000)
+
+
+    })
+
+
+</script>

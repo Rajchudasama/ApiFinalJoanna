@@ -1,0 +1,22 @@
+﻿@model List<string>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>demo</title>
+</head>
+<body>
+    @ViewBag.data
+    <div>
+        @foreach(var x in Model)
+        {
+        <p>@x</p> 
+        }
+    </div>
+</body>
+</html>
